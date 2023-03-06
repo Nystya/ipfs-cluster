@@ -83,10 +83,23 @@ func out(m string, a ...interface{}) {
 	fmt.Fprintf(os.Stderr, m, a...)
 }
 
+func decodeErrCode(err error) int {
+	if err == nil {
+		return 0
+	}
+
+	switch err {
+	case context.DeadlineExceeded:
+		return 62
+	default:
+		return 1
+	}
+}
+
 func checkErr(doing string, err error) {
 	if err != nil {
 		out("error %s: %s\n", doing, err)
-		os.Exit(1)
+		os.Exit(decodeErrCode(err))
 	}
 }
 
